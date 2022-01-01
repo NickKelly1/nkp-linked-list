@@ -441,7 +441,7 @@ class LinkedList<T> {
    *
    * Supports negative indexing
    *
-   * @param from      index insert into & translate forwards from
+   * @param from      first index to insert into
    * @param values    values to insert
    * @returns         the number of values inserted
    */

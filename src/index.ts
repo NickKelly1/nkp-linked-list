@@ -160,7 +160,7 @@ export class LinkedList<T> {
    *
    * Supports negative indexing
    *
-   * @param from      index insert into & translate forwards from
+   * @param from      first index to insert into
    * @param values    values to insert
    * @returns         the number of values inserted
    */
@@ -174,10 +174,23 @@ export class LinkedList<T> {
 
     // find before & after items
     let before: undefined | LinkedListItem<T>;
-    let after = this._head;
-    for (let i = 0; i < Math.min(insertIndex, this.size); i += 1) {
-      before = after;
-      after = after!.next;
+    let after: undefined | LinkedListItem<T>;
+    if  (insertIndex <= this.size / 2) {
+      // inserting into first half
+      // search for before & behind starting @ head
+      after = this._head;
+      for (let i = 0; i < Math.min(insertIndex, this.size); i += 1) {
+        before = after;
+        after = after!.next;
+      }
+    } else {
+      // inserting second first half
+      // search from before & behind starting @ tail
+      before = this._tail;
+      for (let i = this.size - 1; i >= insertIndex; i -= 1) {
+        after = before;
+        before = before!.prev;
+      }
     }
 
     // insert between the before & after nodes
@@ -213,34 +226,70 @@ export class LinkedList<T> {
     // normalize index
     let spliceIndex = LinkedList.calculateIndex(this.size, from);
     if (spliceIndex < 0) spliceIndex = 0;
-    let current: undefined | LinkedListItem<T> = this._head;
     const deleted: T[] = [];
-    let i = 0;
-    while (current) {
-      if (i > this.size) break;
-      if (i >= spliceIndex + deleteCount) break;
+    if (spliceIndex <= this.size / 2) {
+      // splicing starts in first half
+      // sstart search @ head
+      let i = 0;
+      let current: undefined | LinkedListItem<T> = this._head;
+      while (current) {
+        if (i > this.size) break;
+        if (i >= spliceIndex + deleteCount) break;
 
-      const next = current.next;
-      const prev = current.prev;
-      if (i < spliceIndex) {
+        const next = current.next;
+        const prev = current.prev;
+        if (i < spliceIndex) {
         // not in the delete zone yet
+          current = next;
+          i += 1;
+          continue;
+        }
+
+        // in the delete zone
+        deleted.push(current.value);
+        // this is the tail
+        if (!next) this._tail = prev;
+        // this is the head
+        if (!prev) this._head = next;
+        this._size -= 1;
+        // connect the before & after items
+        if (prev) prev.next = next;
+        if (next) next.prev = prev;
         current = next;
         i += 1;
-        continue;
       }
+    } else {
+      // splicing starts in second half
+      // sstart search @ tail
+      let current: undefined | LinkedListItem<T> = this._tail;
+      let i = this.size - 1;
+      while (current) {
+        if (i < 0) break;
+        if (i < spliceIndex) break;
 
-      // in the delete zone
-      deleted.push(current.value);
-      // this is the tail
-      if (!next) this._tail = prev;
-      // this is the head
-      if (!prev) this._head = next;
-      this._size -= 1;
-      // connect the before & after items
-      if (prev) prev.next = next;
-      if (next) next.prev = prev;
-      current = next;
-      i += 1;
+        const next = current.next;
+        const prev = current.prev;
+        if (i > spliceIndex + deleteCount) {
+          // not in the delete zone yet
+          current = prev;
+          i += 1;
+          continue;
+        }
+
+        // in the delete zone
+        deleted.push(current.value);
+        // this is the tail
+        if (!next) this._tail = prev;
+        // this is the head
+        if (!prev) this._head = next;
+        this._size -= 1;
+        // connect the before & after items
+        if (prev) prev.next = next;
+        if (next) next.prev = prev;
+        current = prev;
+        i -= 1;
+      }
+      deleted.reverse();
     }
     return deleted;
   }
