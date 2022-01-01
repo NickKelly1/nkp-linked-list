@@ -21,8 +21,6 @@ const config = {
     // chose which are appropriate
     'browser': false,
     'node': false,
-
-    'es2021': true,
     'jest': true,
   },
   'extends': [
@@ -67,6 +65,7 @@ const config = {
     '@typescript-eslint/no-explicit-any': ['off',],
     '@typescript-eslint/no-namespace': ['off',],
     '@typescript-eslint/no-empty-interface': ['off',],
+    'no-cond-assign': ['off',],
   },
 };
 
