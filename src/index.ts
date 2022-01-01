@@ -6,8 +6,23 @@
  * ({@link LinkedList.unshift}) of the list
  */
 export class LinkedList<T> {
-  public get head(): undefined | T { return this._head?.value; }
-  public get tail(): undefined | T { return this._tail?.value; }
+  /**
+   * Value at the head of the linked list, if it exists
+   */
+  public get head(): undefined | T {
+    return this._head?.value;
+  }
+
+  /**
+   * Value at the tail of the linked list, if it exists
+   */
+  public get tail(): undefined | T {
+    return this._tail?.value;
+  }
+
+  /**
+   * Number of items in the linked list
+   */
   public get size(): number { return this._size; }
 
   protected _head: (undefined | LinkedListItem<T>);

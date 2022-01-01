@@ -14,8 +14,11 @@ Zero dependency linked list data structure.
   - [pnpm](#pnpm)
   - [Exports](#exports)
 - [Usage](#usage)
-  - [LinkedList.constructor](#linkedlistconstructor)
-  - [LinkedList.from](#liinkedlistfrom)
+  - [LinkedList.static.constructor](#linkedliststaticconstructor)
+  - [LinkedList.static.from](#liinkedliststaticfrom)
+  - [LinkedList.prototype.head](#linkedlistprototypehead)
+  - [LinkedList.prototype.tail](#linkedlistprototypetail)
+  - [LinkedList.prototype.size](#linkedlistprototypesize)
   - [LinkedList.prototype[Symbol.iterator]](#linkedlistprototypesymboliterator)
   - [LinkedList.prototype.push](#linkedlistprototypepush)
   - [LinkedList.prototype.shift](#linkedlistprototypeshift)
@@ -67,7 +70,7 @@ pnpm add @nkp/linked-list
 
 ## Usage
 
-### LinkedList.constructor
+### LinkedList.static.constructor
 
 Creates a new LinkedList instance.
 
@@ -96,7 +99,7 @@ import { LinkedList } from '@nkp/linked-list';
 const list = new LinkedList<number>([1, 2, 3]);
 ```
 
-### LinkedList.from
+### LinkedList.static.from
 
 Creates a new LinkedList instance.
 
@@ -126,6 +129,95 @@ class LinkedList<T> {
 import { LinkedList } from '@nkp/linked-list';
 
 const list = LinkedList<number>.from([1, 2, 3]);
+```
+
+### LinkedList.prototype.head
+
+Returns the value at the head (front) of the LinkedList.
+
+```ts
+// interface
+
+class LinkedList<T> {
+  // ...
+
+  /**
+   * Value at the head of the linked list, if it exists
+   */
+  public get head(): undefined | T;
+
+  // ...
+}
+```
+
+```ts
+// example
+
+import { LinkedList } from '@nkp/linked-list';
+
+const list = new LinkedList(['a' 'b', 'c']);
+
+console.log(list.head); // 'a'
+```
+
+### LinkedList.prototype.tail
+
+Returns the value at the tail (end) of the LinkedList.
+
+```ts
+// interface
+
+class LinkedList<T> {
+  // ...
+
+  /**
+   * Value at the tail of the linked list, if it exists
+   */
+  public get tail(): undefined | T {
+
+  // ...
+}
+```
+
+```ts
+// example
+
+import { LinkedList } from '@nkp/linked-list';
+
+const list = new LinkedList(['a' 'b', 'c']);
+
+console.log(list.tail); // 'c'
+```
+
+### LinkedList.prototype.size
+
+Number of items in the linked list.
+
+Similar to `Array.prototype.length`.
+
+```ts
+// interface
+
+class LinkedList<T> {
+  // ...
+
+  /**
+   * Number of items in the linked list
+   */
+  public get size(): number;
+
+  // ...
+}
+```
+
+```ts
+// example
+
+import { LinkedList } from '@nkp/linked-list';
+
+const list = new LinkedList(['a' 'b', 'c']);
+
+console.log(list.size); // 3
 ```
 
 ### LinkedList.prototype\[Symbol.iterator\]
