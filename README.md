@@ -530,7 +530,7 @@ import { LinkedList } from '@nkp/linked-list';
 const list = new LinkedList(['a', 'b', 'c']);
 
 // ['a', 'c']
-const fitered = list.map((str) => str !== 'b');
+const fitered = list.filter((str) => str !== 'b');
 ```
 
 ### LinkedList.prototype.reduce
@@ -570,7 +570,7 @@ import { LinkedList } from '@nkp/linked-list';
 
 const list = new LinkedList(['a', 'b', 'c',]);
 // get the sum of the charcodes in the LinkedList
-const out = llIn.reduce((sum, str) => return acc + str.charCodeAt(0), 0);
+const out = list.reduce((sum, str) => return acc + str.charCodeAt(0), 0);
 console.log(294);
 ```
 
