@@ -1,10 +1,17 @@
 # Changelog
 
+## 0.0.5 - 2022-01-01
+
+### Changed
+
+- Updated readme.md
+
 ## 0.0.4 - 2022-01-01
 
 ### Changed
 
 - Improved read & write performance to the second-half of the LinkedList 
+
 ## 0.0.3 - 2021-12-31
 
 ### Added

@@ -695,7 +695,7 @@ import { LinkedList } from '@nkp/linked-list';
 
 const list = new LinkedList(['a', 'b', 'c',]);
 // get the sum of the charcodes in the LinkedList
-const out = list.reduce((sum, str) => return acc + str.charCodeAt(0), 0);
+const out = list.reduce((sum, str) => acc + str.charCodeAt(0), 0);
 console.log(294);
 ```
 
@@ -1096,7 +1096,7 @@ class LinkedList<T> {
    * @param compareFn   returns sorting precedence of items
    * @returns           LinkedList with values sorted
    */
-  sort(compareFn?: (a: T, b: T) => number): LinkedList<T> {
+  sort(compareFn?: (a: T, b: T) => number): LinkedList<T>;
 
   // ...
 }
