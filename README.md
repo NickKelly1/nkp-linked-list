@@ -4,7 +4,7 @@
 [![deploy status](https://github.com/NickKelly1/nkp-linked-list/actions/workflows/release.yml/badge.svg)](https://github.com/NickKelly1/nkp-linked-list/actions/workflows/release.yml)
 [![known vulnerabilities](https://snyk.io/test/github/NickKelly1/nkp-linked-list/badge.svg)](https://snyk.io/test/github/NickKelly1/nkp-linked-list)
 
-Zero dependency linked list data structure.
+Zero dependency Doubly Linked List class with a variety of utilities.
 
 ## Table of contents
 
@@ -20,27 +20,30 @@ Zero dependency linked list data structure.
   - [LinkedList.prototype.tail](#linkedlistprototypetail)
   - [LinkedList.prototype.size](#linkedlistprototypesize)
   - [LinkedList.prototype[Symbol.iterator]](#linkedlistprototypesymboliterator)
+  - [LinkedList.prototype.values](#linkedlistprototypevalues)
+  - [LinkedList.prototype.keys](#linkedlistprototypekeys)
+  - [LinkedList.prototype.entries](#linkedlistprototypeentries)
   - [LinkedList.prototype.push](#linkedlistprototypepush)
-  - [LinkedList.prototype.shift](#linkedlistprototypeshift)
   - [LinkedList.prototype.unshift](#linkedlistprototypeunshift)
+  - [LinkedList.prototype.shift](#linkedlistprototypeshift)
+  - [LinkedList.prototype.pop](#linkedlistprototypepop)
+  - [LinkedList.prototype.insert](#linkedlistprototypeinsert)
+  - [LinkedList.prototype.remove](#linkedlistprototyperemove)
   - [LinkedList.prototype.clear](#linkedlistprototypeclear)
   - [LinkedList.prototype.forEach](#linkedlistprototypeforeach)
   - [LinkedList.prototype.map](#linkedlistprototypemap)
   - [LinkedList.prototype.filter](#linkedlistprototypefilter)
   - [LinkedList.prototype.reduce](#linkedlistprototypereduce)
-  - [LinkedList.prototype.values](#linkedlistprototypevalues)
-  - [LinkedList.prototype.keys](#linkedlistprototypekeys)
-  - [LinkedList.prototype.entries](#linkedlistprototypeentries)
-  - [LinkedList.prototype.toMap](#linkedlistprototypetomap)
-  - [LinkedList.prototype.toEntriesArray](#linkedlistprototypetoentriesarray)
-  - [LinkedList.prototype.toKeysArray](#linkedlistprototypetokeysarray)
-  - [LinkedList.prototype.toValuesArray](#linkedlistprototypetovaluesarray)
-  - [LinkedList.prototype.toArray](#linkedlistprototypetoarray)
-  - [LinkedList.prototype.clone](#linkedlistprototypeclone)
-  - [LinkedList.prototype.reverse](#linkedlistprototypereverse)
-  - [LinkedList.prototype.sort](#linkedlistprototypesort)
   - [LinkedList.prototype.some](#linkedlistprototypesome)
   - [LinkedList.prototype.every](#linkedlistprototypeevery)
+  - [LinkedList.prototype.reverse](#linkedlistprototypereverse)
+  - [LinkedList.prototype.sort](#linkedlistprototypesort)
+  - [LinkedList.prototype.clone](#linkedlistprototypeclone)
+  - [LinkedList.prototype.toArray](#linkedlistprototypetoarray)
+  - [LinkedList.prototype.toValuesArray](#linkedlistprototypetovaluesarray)
+  - [LinkedList.prototype.toEntriesArray](#linkedlistprototypetoentriesarray)
+  - [LinkedList.prototype.toKeysArray](#linkedlistprototypetokeysarray)
+  - [LinkedList.prototype.toMap](#linkedlistprototypetomap)
 - [Updating Dependencies](#updating-dependencies)
 - [Publishing](#publishing)
 
@@ -263,7 +266,7 @@ for (const item of list) {
 
 Push values to the end of the LinkedList.
 
-Similar to `Array.prototype.push` but returns the LinkedList instance.
+Similar to `Array.prototype.push`.
 
 ```ts
 // interface
@@ -275,9 +278,9 @@ class LinkedList<T> {
    * Push values to the end of the LinkedList
    *
    * @param values  values to push
-   * @returns       the LinkedList instance
+   * @returns       the number of items inserted
    */
-  push(...values: T[]): this;
+  push(...values: T[]): number;
 
   // ...
 }
@@ -300,6 +303,49 @@ list.push('c', 'd', 'e');
 console.log(list.size); // 6
 console.log(list.head); // 'a'
 console.log(list.tail); // 'e'
+```
+
+### LinkedList.prototype.unshift
+
+Unshift values onto the start of the LinkedList.
+
+Similar to `Array.prototype.unshift`.
+
+```ts
+// interface
+
+class LinkedList<T> {
+  // ...
+
+  /**
+   * Push values onto the start of the LinkedList
+   *
+   * @param values  values to unshift
+   * @returns       the number of items inserted
+   */
+  unshift(...values: T[]): number;
+
+  // ...
+}
+```
+
+```ts
+// example
+
+import { LinkedList } from '@nkp/linked-list';
+
+const list = new LinkedList(['a', 'b' ,'c']);
+
+console.log(list.size); // 3
+console.log(list.head); // 'a'
+console.log(list.tail); // 'c'
+
+// ['d', 'e', 'f', 'a', 'b', 'c']
+list.unshift('d', 'e', 'f');
+
+console.log(list.size); // 6
+console.log(list.head); // 'd'
+console.log(list.tail); // 'c'
 ```
 
 ### LinkedList.prototype.shift
@@ -339,11 +385,9 @@ console.log(list.size); // 2
 console.log(list.head); // 'b'
 ```
 
-### LinkedList.prototype.unshift
+### LinkedList.prototype.pop
 
-Unshift values onto the start of the LinkedList.
-
-Similar to `Array.prototype.unshift` but returns the LinkedList instance.
+Retrieve and remove the item at the tail of the LinkedList if it exists.
 
 ```ts
 // interface
@@ -352,12 +396,11 @@ class LinkedList<T> {
   // ...
 
   /**
-   * Push values onto the start of the LinkedList
+   * Retrieve and remove the last value from the LinkedList
    *
-   * @param values  values to unshift
-   * @returns       the LinkedList instance
+   * @returns   the value if it exists
    */
-  unshift(...values: T[]): this;
+  pop(): undefined | T;
 
   // ...
 }
@@ -368,18 +411,100 @@ class LinkedList<T> {
 
 import { LinkedList } from '@nkp/linked-list';
 
-const list = new LinkedList(['a', 'b' ,'c']);
+const list = new LinkedList(['a' 'b', 'c']);
 
 console.log(list.size); // 3
-console.log(list.head); // 'a'
 console.log(list.tail); // 'c'
 
-// ['d', 'e', 'f', 'a', 'b', 'c']
-list.unshift('d', 'e', 'f');
+console.log(list.pop()); // 'c'
 
-console.log(list.size); // 6
-console.log(list.head); // 'd'
-console.log(list.tail); // 'c'
+console.log(list.size); // 2
+console.log(list.head); // 'b'
+```
+
+### LinkedList.prototype.insert
+
+Insert values into the desired index in the Linked List.
+
+Items currently at and to the right of the index are shifted right.
+
+Supports negative indexing.
+
+```ts
+// interface
+
+class LinkedList<T> {
+  // ...
+
+  /**
+   * Insert values at the given index
+   *
+   * Supports negative indexing
+   *
+   * @param from      index insert into & translate forwards from
+   * @param values    values to insert
+   * @returns         the number of values inserted
+   */
+  insert(from: number, ...values: T[]): number;
+
+  // ...
+}
+```
+
+```ts
+// example
+
+import { LinkedList } from '@nkp/linked-list';
+
+const list = new LinkedList(['a', 'b', 'c',]);
+
+// returns: 3
+list.insert(1, 'd', 'e', 'f');
+
+// ['a', 'd', 'e', 'f', 'b', 'c']
+console.log(list.toArray());
+```
+
+### LinkedList.prototype.remove
+
+Remove the given number of values from the desired index forwards.
+
+Supports negative indexing.
+
+Similar to `Array.prototype.splice`.
+
+```ts
+// interface
+
+class LinkedList<T> {
+  // ...
+
+  /**
+   * Remove values starting at the given index
+   *
+   * Supports negative indexing
+   *
+   * @param from
+   * @param deleteCount
+   */
+  remove(from: number, deleteCount = 1): T[];
+
+  // ...
+}
+```
+
+```ts
+// example
+
+import { LinkedList } from '@nkp/linked-list';
+
+const list = new LinkedList(['a', 'b', 'c', 'd']);
+
+// ['b', 'c']
+list.remove(1, 2);
+
+// ['a', 'd']
+console.log(list.toArray());
 ```
 
 ### LinkedList.prototype.clear

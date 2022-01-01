@@ -66,6 +66,7 @@ const config = {
     '@typescript-eslint/no-namespace': ['off',],
     '@typescript-eslint/no-empty-interface': ['off',],
     'no-cond-assign': ['off',],
+    'lines-between-class-members': ['error', 'always', { 'exceptAfterSingleLine': true, },],
   },
 };
 
