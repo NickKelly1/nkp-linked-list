@@ -1,7 +1,7 @@
 {
   "name": "@nkp/linked-list",
   "sideEffects": false,
-  "version": "0.0.5",
+  "version": "1.0.0",
   "description": "Linked list data structure",
   "main": "./cjs/index.js",
   "module": "./esm/index.js",
