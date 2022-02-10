@@ -1,5 +1,22 @@
 # Changelog
 
+## 1.0.0 - 2022-02-09
+
+Stable release
+
+### Added
+
+- `LinkedList.prototype.find`
+- `LinkedList.prototype.replace`
+
+### Changed
+
+- Updated readme.md
+- Moved `LinkedListItem` -> `LinkedList.Item`
+- Updated dependencies
+- Updated build process
+- Updated ci
+
 ## 0.0.5 - 2022-01-01
 
 ### Changed

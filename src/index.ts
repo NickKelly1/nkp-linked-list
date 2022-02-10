@@ -49,8 +49,8 @@ export class LinkedList<T> {
     return this._size;
   }
 
-  protected _head: (undefined | LinkedListItem<T>);
-  protected _tail: (undefined | LinkedListItem<T>);
+  protected _head: (undefined | LinkedList.Item<T>);
+  protected _tail: (undefined | LinkedList.Item<T>);
   protected _size: number;
 
   /**
@@ -71,7 +71,7 @@ export class LinkedList<T> {
    * Create an Iterator for the LinkedList's values
    */
   * [Symbol.iterator](): IterableIterator<T> {
-    let node: undefined | LinkedListItem<T> = this._head;
+    let node: undefined | LinkedList.Item<T> = this._head;
     while (node) {
       yield node.value;
       node = node.next;
@@ -173,8 +173,8 @@ export class LinkedList<T> {
     if (insertIndex < 0) insertIndex = 0;
 
     // find before & after items
-    let before: undefined | LinkedListItem<T>;
-    let after: undefined | LinkedListItem<T>;
+    let before: undefined | LinkedList.Item<T>;
+    let after: undefined | LinkedList.Item<T>;
     if  (insertIndex <= this.size / 2) {
       // inserting into first half
       // search for before & behind starting @ head
@@ -195,7 +195,7 @@ export class LinkedList<T> {
 
     // insert between the before & after nodes
     for (const value of values) {
-      const current = new LinkedListItem(value);
+      const current = new LinkedList.Item(value);
 
       this._size += 1;
       // this is head
@@ -231,7 +231,7 @@ export class LinkedList<T> {
       // splicing starts in first half
       // sstart search @ head
       let i = 0;
-      let current: undefined | LinkedListItem<T> = this._head;
+      let current: undefined | LinkedList.Item<T> = this._head;
       while (current) {
         if (i > this.size) break;
         if (i >= spliceIndex + deleteCount) break;
@@ -261,7 +261,7 @@ export class LinkedList<T> {
     } else {
       // splicing starts in second half
       // sstart search @ tail
-      let current: undefined | LinkedListItem<T> = this._tail;
+      let current: undefined | LinkedList.Item<T> = this._tail;
       let i = this.size - 1;
       while (current) {
         if (i < 0) break;
@@ -306,6 +306,92 @@ export class LinkedList<T> {
   //
   // Traversal
   //
+
+
+  /**
+   * Find the first item for whom the predicate function returns truthy
+   *
+   * replace its value with the result of the replacer function
+   *
+   * @param callbackfn  function to deterermine if this is the value
+   * @param thisArg     `this` value for callbackfn
+   * @param returns     the replaced, if it was replaced
+   */
+  replace<S extends T, V extends T>(
+    predicate: (value: T, index: number, obj: LinkedList<T>) => value is S,
+    replace: (value: S, index: number, obj: LinkedList<T>) => V,
+    thisPredicateArg?: any,
+    thisReplaceArg?: any,
+  ): undefined | V;
+  replace<S extends T>(
+    predicate: (value: T, index: number, obj: LinkedList<T>) => value is S,
+    replace: (value: S, index: number, obj: LinkedList<T>) => T,
+    thisPredicateArg?: any,
+    thisReplaceArg?: any,
+  ): undefined | T;
+  replace<V extends T>(
+    predicate: (value: T, index: number, obj: LinkedList<T>) => unknown,
+    replace: (value: T, index: number, obj: LinkedList<T>) => V,
+    thisPredicateArg?: any,
+    thisReplaceArg?: any,
+  ): undefined | V;
+  replace(
+    predicate: (value: T, index: number, obj: LinkedList<T>) => unknown,
+    replace: (value: T, index: number, obj: LinkedList<T>) => T,
+    thisPredicateArg?: any,
+    thisReplaceArg?: any,
+  ): undefined | T;
+  replace(
+    predicate: (value: T, index: number, obj: LinkedList<T>) => unknown,
+    replace: (value: T, index: number, obj: LinkedList<T>) => T,
+    thisPredicateArg?: any,
+    thisReplaceArg?: any,
+  ): undefined | T {
+    let index = 0;
+    let node: undefined | LinkedList.Item<T> = this._head;
+    while (node) {
+      const item = node.value;
+      if (predicate.call(thisPredicateArg, item, index, this)) {
+        const replaced = replace.call(thisReplaceArg, item, index, this);
+        node.value = replaced;
+        return replaced;
+      }
+      index += 1;
+      node = node.next;
+    }
+    return undefined;
+  }
+
+  /**
+   * Find and return the first item for whom the predicate function
+   * returns truthy
+   *
+   * @param callbackfn  function to deterermine if this is the value
+   * @param thisArg     `this` value for callbackfn
+   * @param returns     the item, if it was found
+   */
+  find<S extends T>(
+    predicate: (value: T, index: number, obj: LinkedList<T>) => value is S,
+    thisArg?: any,
+  ): S | undefined;
+  find(
+    predicate: (value: T, index: number, obj: LinkedList<T>) => unknown,
+    thisArg?: any,
+  ): T | undefined;
+  find(
+    predicate: (value: T, index: number, obj: LinkedList<T>) => unknown,
+    thisArg?: any,
+  ): T | undefined {
+    let index = 0;
+    let node: undefined | LinkedList.Item<T> = this._head;
+    while (node) {
+      const item = node.value;
+      if (predicate.call(thisArg, item, index, this)) return item;
+      index += 1;
+      node = node.next;
+    }
+    return undefined;
+  }
 
   /**
    * Execute a callbackfn for each value in the LinkedList
@@ -513,22 +599,24 @@ export class LinkedList<T> {
   }
 }
 
-export class LinkedListItem<T> {
-  public value: T;
-  public next: undefined | LinkedListItem<T> = undefined;
-  public prev: undefined | LinkedListItem<T> = undefined;
+export namespace LinkedList {
+  export class Item<T> {
+    public value: T;
+    public next: undefined | Item<T> = undefined;
+    public prev: undefined | Item<T> = undefined;
 
-  constructor(value: T) {
-    this.value = value;
-  }
+    constructor(value: T) {
+      this.value = value;
+    }
 
-  /**
-   * Shallow copy the LinkedListItem
-   */
-  clone(): LinkedListItem<T> {
-    const clone = new LinkedListItem(this.value);
-    clone.next = this.next;
-    clone.prev = this.prev;
-    return clone;
+    /**
+     * Shallow copy the LinkedListItem
+     */
+    clone(): Item<T> {
+      const clone = new Item(this.value);
+      clone.next = this.next;
+      clone.prev = this.prev;
+      return clone;
+    }
   }
 }

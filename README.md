@@ -30,6 +30,8 @@ Zero dependency Doubly Linked List class with a variety of utilities.
   - [LinkedList.prototype.insert](#linkedlistprototypeinsert)
   - [LinkedList.prototype.remove](#linkedlistprototyperemove)
   - [LinkedList.prototype.clear](#linkedlistprototypeclear)
+  - [LinkedList.prototype.replace](#linkedlistprototypereplace)
+  - [LinkedList.prototype.find](#linkedlistprototypefind)
   - [LinkedList.prototype.forEach](#linkedlistprototypeforeach)
   - [LinkedList.prototype.map](#linkedlistprototypemap)
   - [LinkedList.prototype.filter](#linkedlistprototypefilter)
@@ -542,6 +544,121 @@ list.clear();
 console.log(list.size); // 0
 console.log(list.head); // undefined
 console.log(list.tail); // undefined
+```
+
+### LinkedList.prototype.replace
+
+Find the value that causes the predicate function to return truthy, replace it with the replacer function and return the replacing value.
+
+```ts
+// interface
+
+class LinkedList<T> {
+  // ...
+
+  /**
+   * Find the first item for whom the predicate function returns truthy
+   *
+   * replace its value with the result of the replacer function
+   *
+   * @param callbackfn  function to deterermine if this is the value
+   * @param thisArg     `this` value for callbackfn
+   * @param returns     the replaced, if it was replaced
+   */
+  replace<S extends T, V extends T>(
+    predicate: (value: T, index: number, obj: LinkedList<T>) => value is S,
+    replace: (value: S, index: number, obj: LinkedList<T>) => V,
+    thisPredicateArg?: any,
+    thisReplaceArg?: any,
+  ): undefined | V;
+  replace<S extends T>(
+    predicate: (value: T, index: number, obj: LinkedList<T>) => value is S,
+    replace: (value: S, index: number, obj: LinkedList<T>) => T,
+    thisPredicateArg?: any,
+    thisReplaceArg?: any,
+  ): undefined | T;
+  replace<V extends T>(
+    predicate: (value: T, index: number, obj: LinkedList<T>) => unknown,
+    replace: (value: T, index: number, obj: LinkedList<T>) => V,
+    thisPredicateArg?: any,
+    thisReplaceArg?: any,
+  ): undefined | V;
+  replace(
+    predicate: (value: T, index: number, obj: LinkedList<T>) => unknown,
+    replace: (value: T, index: number, obj: LinkedList<T>) => T,
+    thisPredicateArg?: any,
+    thisReplaceArg?: any,
+  ): undefined | T;
+
+  // ...
+}
+```
+
+```ts
+// example
+
+import { LinkedList } from '@nkp/linked-list';
+
+const list = new LinkedList(['a', 'b', 'c',]);
+
+// LinkedList [
+//  'a'
+//  'c'
+//  'c'
+// ]
+const ret = list.replace(
+  // find
+  (value) => value === 'b',
+  // replace
+  (value) => 'c',
+});
+
+// 'c'
+console.log(ret);
+```
+
+### LinkedList.prototype.find
+
+Find and return the first item for whom the predicate function returns truthy.
+
+Similar to `Array.prototype.find`.
+
+```ts
+// interface
+
+class LinkedList<T> {
+  // ...
+
+  /**
+   * Find and return the first item for whom the predicate function
+   * returns truthy
+   *
+   * @param callbackfn  function to deterermine if this is the value
+   * @param thisArg     `this` value for callbackfn
+   * @param returns     the item, if it was found
+   */
+  find<S extends T>(
+    predicate: (value: T, index: number, obj: LinkedList<T>) => value is S,
+    thisArg?: any,
+  ): S | undefined;
+  find(
+    predicate: (value: T, index: number, obj: LinkedList<T>) => unknown,
+    thisArg?: any,
+  ): T | undefined;
+
+  // ...
+}
+```
+
+```ts
+// example
+
+import { LinkedList } from '@nkp/linked-list';
+
+const list = new LinkedList(['a', 'b', 'c',]);
+
+// 'b'
+console.log(list.find((value, index) => index % 2 === 1));
 ```
 
 ### LinkedList.prototype.forEach

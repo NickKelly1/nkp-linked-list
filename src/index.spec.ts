@@ -393,6 +393,140 @@ describe('LinkedList', () => {
       });
     });
 
+    describe('replace', () => {
+      it('should fire `callbackfn` for each item in the LinkedList', () => {
+        const list = new LinkedList<string>(['a', 'b', 'c',]);
+        const expected = [
+          ['a', 0, list,],
+          ['b', 1, list,],
+          ['c', 2, list,],
+        ];
+        const actual: [value: string, index: number, ll: LinkedList<string>][] = [];
+        let neverCalled = true;
+        list.replace(
+          (...values) => {
+            actual.push(values);
+            return false;
+          },
+          () => {
+            neverCalled = false;
+            return 'never called';
+          }
+        );
+        expect(actual).toEqual(expected);
+        expect(neverCalled).toBeTruthy();
+      });
+
+      it('should replace the matching value', () => {
+        const list = new LinkedList<[letter: string, index: number]>([
+          ['a', 0,],
+          ['b', 1,],
+          ['c', 2,],
+        ]);
+        const expected = ['c', 3,] as [string, number];
+        const actual = list.replace(
+          ([l,]) => l === 'b',
+          () => expected,
+        );
+        expect(actual).toEqual(expected);
+        expect(list.toArray()).toEqual([
+          ['a', 0,],
+          ['c', 3,],
+          ['c', 2,],
+        ]);
+      });
+
+      it('should replce the first matching value', () => {
+        const list = new LinkedList<[letter: string, index: number]>([
+          ['a', 0,],
+          ['b', 1,],
+          ['b', 2,],
+          ['c', 3,],
+        ]);
+        const expected = ['c', 4,] as [string, number];
+        const actual = list.replace(
+          ([l,]) => l === 'b',
+          () => expected,
+        );
+        expect(actual).toEqual(expected);
+        expect(list.toArray()).toEqual([
+          ['a', 0,],
+          ['c', 4,],
+          ['b', 2,],
+          ['c', 3,],
+        ]);
+      });
+
+      it('should return undefined if the value does not exist', () => {
+        const list = new LinkedList<[letter: string, index: number]>([
+          ['a', 0,],
+          ['b', 1,],
+          ['b', 2,],
+          ['c', 3,],
+        ]);
+        const expected = ['c', 4,] as [string, number];
+        const actual = list.replace(
+          ([l,]) => l === 'e',
+          () => expected,
+        );
+        expect(actual).toEqual(undefined);
+        expect(list.toArray()).toEqual([
+          ['a', 0,],
+          ['b', 1,],
+          ['b', 2,],
+          ['c', 3,],
+        ]);
+      });
+    });
+
+    describe('find', () => {
+      it('should fire `callbackfn` for each item in the LinkedList', () => {
+        const list = new LinkedList<string>(['a', 'b', 'c',]);
+        const expected = [
+          ['a', 0, list,],
+          ['b', 1, list,],
+          ['c', 2, list,],
+        ];
+        const actual: [value: string, index: number, ll: LinkedList<string>][] = [];
+        list.find((...values) => {
+          actual.push(values);
+          return false;
+        });
+        expect(actual).toEqual(expected);
+      });
+
+      it('should return the matching value', () => {
+        const list = new LinkedList<[letter: string, index: number]>([
+          ['a', 0,],
+          ['b', 1,],
+          ['c', 2,],
+        ]);
+        const expected = ['b', 1,];
+        const actual = list.find(([l,]) => l === 'b');
+        expect(actual).toEqual(expected);
+      });
+
+      it('should return the first matching value', () => {
+        const list = new LinkedList<[letter: string, index: number]>([
+          ['b', 1,],
+          ['b', 2,],
+        ]);
+        const expected = ['b', 1,];
+        const actual = list.find(([l,]) => l === 'b');
+        expect(actual).toEqual(expected);
+      });
+
+      it('should return undefined if the value does not exist', () => {
+        const list = new LinkedList<[letter: string, index: number]>([
+          ['a', 0,],
+          ['c', 2,],
+        ]);
+        const expected = undefined;
+        const actual = list.find(([l,]) => l === 'b');
+        expect(actual).toEqual(expected);
+      });
+    });
+
     describe('forEach', () => {
       it('should fire `callbackfn` for each item in the LinkedList', () => {
         const list = new LinkedList<string>(['a', 'b', 'c',]);
